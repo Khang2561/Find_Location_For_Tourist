@@ -13,12 +13,26 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Ứng dụng cần quyền truy cập vị trí để hiển thị vị trí của bạn trên bản đồ.",
+        "NSLocationAlwaysUsageDescription": "Ứng dụng cần quyền truy cập vị trí luôn luôn để theo dõi vị trí của bạn khi đang chạy ngầm."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "googleServicesFile": "./google-services.json",
+      "package": "com.UitProject",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
+      ],
+      "googleMaps": {
+        "apiKey": "AIzaSyDlOsBC3AODJd6iJUuLYPLkamZ8H_r6cnk"
       }
     },
     "web": {
@@ -27,7 +41,13 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUse": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
