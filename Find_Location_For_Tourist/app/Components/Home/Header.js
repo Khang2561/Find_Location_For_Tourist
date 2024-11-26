@@ -1,6 +1,5 @@
 import { View, Image, StyleSheet, TextInput } from 'react-native';
 import React from 'react';
-import Common from '../../Common/Common'
 
 export default function Header() {
   return (
@@ -42,7 +41,7 @@ const styles = StyleSheet.create({
   },
   search: {
     borderWidth: 1,
-    borderColor: Common.blank,
+    borderColor: 'black',
     padding: 6,
     borderRadius: 30, // Bo tròn các góc vừa phải
     paddingLeft: 15,

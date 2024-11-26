@@ -1,56 +1,47 @@
-import { View, Text, StyleSheet } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import Header from '../Components/Home/Header';
-import GoogleMapView from '../Components/Home/GoogleMapView';
-import CategoryList from '../Components/Home/CategoryList';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import nearByPlace from '../../app/Services/GlobalApi';
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
+import Header from "../Components/Home/Header";
+import MapboxView from "../Components/Home/MapboxView";
+import CategoryList from "../Components/Home/CategoryList";
+import PlaceList from "../Components/Home/PlaceList";
+import { fetchLocations } from "../Services/GlobalApi";
 
 export default function Home() {
-  // State to store nearby places data
-  const [places, setPlaces] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [locations, setLocations] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Coordinates for testing (e.g., Times Square in New York)
-  const latitude = 40.7580;
-  const longitude = -73.9855;
-
-  // Function to fetch nearby places
-  const getNearbyPlaces = async () => {
-    try {
-      const results = await nearByPlace(latitude, longitude);
-      setPlaces(results); // Update state with API response
-      console.log("Nearby Places:", results); // Log results to console
-    } catch (error) {
-      console.error("Error fetching nearby places:", error);
-    }
-  };
-
-  // Call the function when the component mounts
   useEffect(() => {
-    getNearbyPlaces();
-  }, []);
+    const fetchLocation = async () => {
+      if (!selectedCategory) {
+        setLocations([]);
+        return;
+      }
 
-  // Log places data whenever it updates
-  useEffect(() => {
-    console.log("Updated places:", places);
-  }, [places]);
+      setLoading(true); // Start loading
+      const fetchedLocations = await fetchLocations(selectedCategory);
+      setLocations(fetchedLocations);
+      setLoading(false); // Stop loading
+    };
+
+    fetchLocation();
+  }, [selectedCategory]);
 
   return (
     <View style={styles.container}>
       <Header />
-      {/* Hiển thị map */}
-      <GoogleMapView style={styles.map} />
-      {/* Hiển thị loại */}
-      <CategoryList />
+      <MapboxView locations={locations} loading={loading} />
+      <CategoryList onCategorySelect={setSelectedCategory} />
+      <PlaceList locations={locations} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   map: {
     borderRadius: 20,
-  }
+  },
 });
