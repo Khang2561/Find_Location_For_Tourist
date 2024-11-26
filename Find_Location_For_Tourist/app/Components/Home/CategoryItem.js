@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
         padding: 10,
         alignItems: 'center', // Canh giữa các phần tử theo chiều ngang
         justifyContent: 'center', // Canh giữa theo chiều dọc
-        margin: 10,
         width: 100,
         height: 120,
         borderRadius: 15,

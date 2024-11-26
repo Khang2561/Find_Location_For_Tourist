@@ -17,23 +17,22 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Ứng dụng cần quyền truy cập vị trí để hiển thị vị trí của bạn trên bản đồ.",
         "NSLocationAlwaysUsageDescription": "Ứng dụng cần quyền truy cập vị trí luôn luôn để theo dõi vị trí của bạn khi đang chạy ngầm."
-      }
+      },
+      "bundleIdentifier": "com.UitProject"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "googleServicesFile": "./google-services.json",
       "package": "com.UitProject",
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION"
-      ],
-      "googleMaps": {
-        "apiKey": "AIzaSyDlOsBC3AODJd6iJUuLYPLkamZ8H_r6cnk"
-      }
+        "ACCESS_BACKGROUND_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -43,14 +42,23 @@
     "plugins": [
       "expo-router",
       [
-        "expo-location",
+        "@rnmapbox/maps",
         {
-          "locationAlwaysAndWhenInUse": true
+          "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoia2hhbmcxNDEyMDMiLCJhIjoiY20zcmhiajVpMDV5azJtc2JudXo3azBkeCJ9.7F7tI4j2t5jZ_9-eVy1w1Q",
+          "RNMapboxMapsVersion": "11.0.0"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "73b9cd12-4e4a-4acb-9e2e-8fd3d4d1b79f"
+      }
     }
   }
 }
