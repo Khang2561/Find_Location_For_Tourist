@@ -14,3 +14,20 @@ export async function fetchLocations(category) {
     return [];
   }
 }
+
+export async function searchLocations(query) {
+  try {
+    const { data, error } = await supabase
+      .from("locations")
+      .select("*")
+      .ilike("title", `%${query}%`); // Case-insensitive search
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error("Error searching locations:", err.message);
+    return [];
+  }
+}
+
+
+

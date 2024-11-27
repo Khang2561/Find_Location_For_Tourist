@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -18,6 +18,17 @@ MapboxGL.setAccessToken(
 export default function MapboxView({ locations, loading }) {
   const { location } = useContext(UserLocationContext);
   const cameraRef = useRef(null);
+
+  useEffect(() => {
+    if (cameraRef.current && locations.length === 1) {
+      const { longitude, latitude } = locations[0];
+      cameraRef.current.setCamera({
+        centerCoordinate: [longitude, latitude],
+        zoomLevel: 14,
+        animationDuration: 1000,
+      });
+    }
+  }, [locations]);
 
   const handleRecenter = () => {
     if (cameraRef.current && location) {

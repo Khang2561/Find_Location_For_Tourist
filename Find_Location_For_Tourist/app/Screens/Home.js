@@ -7,6 +7,7 @@ import PlaceList from "../Components/Home/PlaceList";
 import { fetchLocations } from "../Services/GlobalApi";
 
 export default function Home() {
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [locations, setLocations] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -27,9 +28,14 @@ export default function Home() {
     fetchLocation();
   }, [selectedCategory]);
 
+  const handleLocationSelect = (location) => {
+    setSelectedLocation(location);
+    setLocations([location]); // Only show the selected location
+  };
+  
   return (
     <View style={styles.container}>
-      <Header />
+      <Header onLocationSelect={handleLocationSelect} />
       <MapboxView locations={locations} loading={loading} />
       <CategoryList onCategorySelect={setSelectedCategory} />
       <PlaceList locations={locations} />

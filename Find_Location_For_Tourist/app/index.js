@@ -4,6 +4,8 @@ import { StyleSheet, View } from "react-native";
 import * as Location from "expo-location";
 import TabNavigation from "./Navigations/TabNavigation";
 import { UserLocationContext } from "./Context/UserLocationContext";
+import { Provider } from "react-native-paper";
+
 
 export default function Page() {
   const [location, setLocation] = useState(null); // User location state
@@ -24,11 +26,13 @@ export default function Page() {
 
   return (
     <View style={styles.container}>
-      <UserLocationContext.Provider value={{ location, setLocation }}>
-        <NavigationContainer independent={true}>
-          <TabNavigation />
-        </NavigationContainer>
-      </UserLocationContext.Provider>
+      <Provider>
+        <UserLocationContext.Provider value={{ location, setLocation }}>
+          <NavigationContainer independent={true}>
+            <TabNavigation />
+          </NavigationContainer>
+        </UserLocationContext.Provider>
+      </Provider>
     </View>
   );
 }
