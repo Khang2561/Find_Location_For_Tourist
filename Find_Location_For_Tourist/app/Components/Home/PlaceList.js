@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import PlaceItem from "../../Components/Home/PlaceItem";
+import { useNavigation } from "@react-navigation/native";
 
 export default function PlaceList({ locations }) {
   const [data, setData] = useState([]); // State to hold the data
   const [page, setPage] = useState(1); // State to track the current page
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [hasMore, setHasMore] = useState(true); // State to track if more data is available
+  const navigator = useNavigation();
 
   // Fetch data based on the current page
   const fetchData = async (pageNumber) => {
@@ -51,7 +60,13 @@ export default function PlaceList({ locations }) {
   // Render footer component for the loading indicator
   const renderFooter = () => {
     if (!loading) return null;
-    return <ActivityIndicator size="small" color="#000" style={styles.loadingIndicator} />;
+    return (
+      <ActivityIndicator
+        size="small"
+        color="#000"
+        style={styles.loadingIndicator}
+      />
+    );
   };
 
   if (!data.length && !loading) {
@@ -62,10 +77,18 @@ export default function PlaceList({ locations }) {
     );
   }
 
+  const onPlaceClick = (item) => {
+    navigator.navigate('place-detail', {place:item});
+  }
+
   return (
     <FlatList
       data={data}
-      renderItem={({ item }) => <PlaceItem location={item} />}
+      renderItem={({ item }) => (
+        <TouchableOpacity onPress={() => onPlaceClick(item)}>
+          {<PlaceItem location={item} />}
+        </TouchableOpacity>
+      )}
       keyExtractor={(item, index) => index.toString()}
       contentContainerStyle={styles.listContainer}
       onEndReached={loadMore}
