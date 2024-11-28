@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
-export default function PlaceDetail({ place }) {
+export default function PlaceDetail({ place, onGetDirections }) {
   return (
     <View>
       <Text style={styles.title}>{place.title}</Text>
@@ -22,10 +22,10 @@ export default function PlaceDetail({ place }) {
         {place.address}
       </Text>
       <View style={styles.action}>
-        <View style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton} onPress={onGetDirections}>
           <Ionicons name="navigate-circle-outline" size={24} color={"black"} />
           <Text style={{ fontSize: 16, fontFamily: "raleway" }}>Hướng đi</Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.actionButton}>
           <Ionicons name="share-outline" size={24} color={"black"} />
           <Text style={{ fontSize: 16, fontFamily: "raleway" }}>Chia sẻ</Text>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   action: {
     marginTop: 10,
-    flexDirection: 'row',
+    flexDirection: "row",
     display: "flex",
     gap: 10,
   },
