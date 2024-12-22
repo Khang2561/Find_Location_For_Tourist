@@ -1,13 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Fav from "../Screens/Fav";
 import Search from "../Screens/Search";
 import Profile from "../Screens/Profile";
-import Entypo from "react-native-vector-icons/Entypo"; // Sử dụng đúng thư viện icon
+import Entypo from "react-native-vector-icons/Entypo"; 
 import HomeNavigation from "./HomeNavigation";
+import {isLoggedIn, onAuthStateChange} from "../Services/AuthUtils";
 
 export default function TabNavigation() {
   const Tab = createBottomTabNavigator();
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLoginStatus = async ()=> {
+      const status = await isLoggedIn();
+      setLoggedIn(status);
+    };
+    
+    checkLoginStatus();
+    const unsubscribe = onAuthStateChange((status) => {
+      setLoggedIn(status);
+    });
+
+    return () => {
+      unsubscribe();
+    }
+  }, []);
 
   return (
     <Tab.Navigator
@@ -40,7 +58,7 @@ export default function TabNavigation() {
       />
 
       {/* Tab Fav */}
-      <Tab.Screen
+      {loggedIn && (<Tab.Screen
         name="Fav"
         component={Fav}
         options={{
@@ -50,7 +68,8 @@ export default function TabNavigation() {
           ),
         }}
       />
-
+)}
+      
       {/* Tab Profile */}
       <Tab.Screen
         name="Profile"

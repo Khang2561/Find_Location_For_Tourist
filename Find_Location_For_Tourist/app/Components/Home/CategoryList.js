@@ -7,19 +7,19 @@ export default function CategoryList({ onCategorySelect, selectedCategory }) {
   const CategoryList = [
     {
       id: 1,
-      name: "Coffee",
+      name: "Cà phê",
       value: "coffeeshop",
       icon: require("./../../../assets/images/coffee-cup.png"),
     },
     {
       id: 2,
-      name: "Restaurants",
+      name: "Nhà hàng",
       value: "restaurant",
       icon: require("./../../../assets/images/restaurant-icon.png"),
     },
     {
       id: 3,
-      name: "Hotel",
+      name: "Khách sạn",
       value: "hotel",
       icon: require("./../../../assets/images/hotel-icon.jpg"),
     },

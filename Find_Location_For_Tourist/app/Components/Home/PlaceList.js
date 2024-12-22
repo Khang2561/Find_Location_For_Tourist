@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -18,7 +18,7 @@ export default function PlaceList({ locations }) {
   const navigator = useNavigation();
 
   // Fetch data based on the current page
-  const fetchData = async (pageNumber) => {
+  const fetchData = useCallback(async (pageNumber) => {
     if (!locations || !locations.length) return;
 
     setLoading(true);
@@ -38,7 +38,7 @@ export default function PlaceList({ locations }) {
     }
 
     setLoading(false);
-  };
+  }, [locations]);
 
   // Load initial data
   useEffect(() => {
@@ -46,16 +46,16 @@ export default function PlaceList({ locations }) {
     setHasMore(true); // Reset the flag
     setPage(1); // Reset the page counter
     fetchData(1); // Fetch the first page
-  }, [locations]);
+  }, [locations, fetchData]);
 
   // Load more data when the user scrolls to the end
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     if (!loading && hasMore) {
       const nextPage = page + 1;
       setPage(nextPage);
       fetchData(nextPage);
     }
-  };
+  }, [loading, hasMore, page, fetchData]);
 
   // Render footer component for the loading indicator
   const renderFooter = () => {
@@ -72,21 +72,21 @@ export default function PlaceList({ locations }) {
   if (!data.length && !loading) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>No locations available.</Text>
+        <Text style={styles.emptyText}>Không có địa điểm nào.</Text>
       </View>
     );
   }
 
   const onPlaceClick = (item) => {
-    navigator.navigate('place-detail', {place:item});
-  }
+    navigator.navigate('place-detail', { place: item });
+  };
 
   return (
     <FlatList
       data={data}
       renderItem={({ item }) => (
         <TouchableOpacity onPress={() => onPlaceClick(item)}>
-          {<PlaceItem location={item} />}
+          <PlaceItem location={item} />
         </TouchableOpacity>
       )}
       keyExtractor={(item, index) => index.toString()}

@@ -10,12 +10,11 @@ import {
 import MapboxGL from "@rnmapbox/maps";
 import { UserLocationContext } from "../../Context/UserLocationContext";
 import { MaterialIcons } from "@expo/vector-icons";
+import { MAPBOX_TOKEN } from "../../Services/GlobalApi";
 
-MapboxGL.setAccessToken(
-  "pk.eyJ1Ijoia2hhbmcxNDEyMDMiLCJhIjoiY20zdDltNHZvMDd3MjJsc2ZsZmVzOXZlZCJ9.DZj1STnMXQgd_ftwT88I1Q"
-);
+MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
-export default function MapboxView({ locations, loading, route }) {
+export default function MapboxView({ locations, loading, route, onPinPress }) {
   const { location } = useContext(UserLocationContext);
   const cameraRef = useRef(null);
 
@@ -88,6 +87,7 @@ export default function MapboxView({ locations, loading, route }) {
                 key={`location-${index}`}
                 id={`marker-${index}`}
                 coordinate={[loc.longitude, loc.latitude]}
+                onSelected={() => onPinPress(loc)} // Handle pin press
               >
                 <View />
               </MapboxGL.PointAnnotation>
