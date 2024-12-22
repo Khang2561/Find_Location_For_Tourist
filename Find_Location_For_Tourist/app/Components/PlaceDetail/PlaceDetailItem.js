@@ -2,7 +2,12 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
-export default function PlaceDetail({ place, onGetDirections }) {
+export default function PlaceDetailItem({
+  place,
+  onGetDirections,
+  isFavorite,
+  onToggleFavorite,
+}) {
   return (
     <View>
       <Text style={styles.title}>{place.title}</Text>
@@ -14,7 +19,7 @@ export default function PlaceDetail({ place, onGetDirections }) {
         source={
           place.imageUrl
             ? { uri: place.imageUrl }
-            : require("../../../assets/images/logo.jpg") // Replace with your fallback image
+            : require("../../../assets/images/logo.jpg")
         }
         style={styles.image}
       />
@@ -30,6 +35,17 @@ export default function PlaceDetail({ place, onGetDirections }) {
           <Ionicons name="share-outline" size={24} color={"black"} />
           <Text style={{ fontSize: 16, fontFamily: "raleway" }}>Chia sẻ</Text>
         </View>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={onToggleFavorite}
+        >
+          <Ionicons
+            name={isFavorite ? "heart" : "heart-outline"}
+            size={24}
+            color={"red"}
+          />
+          <Text style={{ fontSize: 16, fontFamily: "raleway" }}>Yêu thích</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -65,7 +81,6 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   actionButton: {
-    direction: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 5,

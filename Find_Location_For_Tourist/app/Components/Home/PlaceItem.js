@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function PlaceItem({ location }) {
+const PlaceItem = React.memo(({ location }) => {
   if (!location) {
     return (
       <View style={styles.container}>
@@ -25,13 +25,13 @@ export default function PlaceItem({ location }) {
         <Text style={styles.title}>{location.title || "Không có tên"}</Text>
         <Text style={styles.address}>{location.address || "Địa chỉ không được cung cấp"}</Text>
         <View style={styles.rating}>
-            <AntDesign name="star" size={20} color={'yellow'}/>
-            <Text>{location.totalScore || "Không có đánh giá"}</Text>
+          <AntDesign name="star" size={20} color="yellow" />
+          <Text>{location.totalScore || "Không có đánh giá"}</Text>
         </View>
       </View>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -67,9 +67,11 @@ const styles = StyleSheet.create({
   },
   rating: {
     fontSize: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
-    marginTop: 5
-  }
+    marginTop: 5,
+  },
 });
+
+export default PlaceItem;

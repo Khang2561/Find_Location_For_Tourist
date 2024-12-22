@@ -9,7 +9,7 @@ export default function HomeNavigation() {
 
   return (
     <Stack.Navigator screenOptions={{
-        gestureEnabled:true,
+        gestureEnabled:false,
         headerShown:false,
         ...(isAndroid&&TransitionPresets.ModalPresentationIOS)
     }}>

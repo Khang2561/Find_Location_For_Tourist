@@ -12,7 +12,7 @@ import {
 import { Portal } from "react-native-paper"; // Import Portal
 import { searchLocations } from "../../Services/GlobalApi";
 
-export default function Header({ onLocationSelect }) {
+export default function Header({ onLocationSelect, onSearch }) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -34,6 +34,14 @@ export default function Header({ onLocationSelect }) {
     onLocationSelect(location);
   };
 
+  const handleKeyPress = async ({ nativeEvent }) => {
+    if (nativeEvent.key === 'Enter') {
+      const data = await searchLocations(query);
+      onSearch(data);
+      setSuggestions([]);
+    }
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.suggestionItem}
@@ -52,6 +60,7 @@ export default function Header({ onLocationSelect }) {
           style={styles.search}
           value={query}
           onChangeText={handleSearch}
+          onKeyPress={handleKeyPress}
         />
       </View>
       <Image source={require("../../../assets/images/logo.jpg")} style={styles.userImage} />
@@ -100,7 +109,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("screen").width * 0.8,
     backgroundColor: "white",
     borderRadius: 5,
-    elevation: 5, // Add shadow
+    elevation: 5, 
     zIndex: 1000, // Ensure it's above all other components
   },
   suggestionItem: {
