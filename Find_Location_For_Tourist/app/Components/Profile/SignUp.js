@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { supabase } from '../../../lib/supabase';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SignUp({ onLoginSwitch }) {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [phone, setPhone] = useState('');
-  const [birthday, setBirthday] = useState('');
+  const [birthday, setBirthday] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +33,7 @@ export default function SignUp({ onLoginSwitch }) {
         email,
         username,
         phone,
-        birthday,
+        birthday: `${birthday.getFullYear()}-${birthday.getMonth() + 1}-${birthday.getDate()}`, // Format date as YYYY-MM-DD
         password,
       });
       if (insertError) throw insertError;
@@ -42,6 +45,12 @@ export default function SignUp({ onLoginSwitch }) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || birthday;
+    setShowDatePicker(false);
+    setBirthday(currentDate);
   };
 
   return (
@@ -65,12 +74,18 @@ export default function SignUp({ onLoginSwitch }) {
         value={phone}
         onChangeText={setPhone}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Ngày sinh (YYYY-MM-DD)"
-        value={birthday}
-        onChangeText={setBirthday}
-      />
+      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateInput}>
+        <Text>{`${birthday.getFullYear()}-${birthday.getMonth() + 1}-${birthday.getDate()}`}</Text>
+        <Ionicons name="calendar" size={24} color="gray" style={styles.calendarIcon} />
+      </TouchableOpacity>
+      {showDatePicker && (
+        <DateTimePicker
+          value={birthday}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
       <TextInput
         style={styles.input}
         placeholder="Mật khẩu"
@@ -103,49 +118,62 @@ export default function SignUp({ onLoginSwitch }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      heading: {
-        fontSize: 24,
-        marginBottom: 20,
-      },
-      input: {
-        width: '100%',
-        padding: 10,
-        borderWidth: 1,
-        marginBottom: 10,
-        borderRadius: 5,
-      },
-      button: {
-        width: '100%',
-        padding: 15,
-        backgroundColor: '#6200ee',
-        borderRadius: 5,
-        alignItems: 'center',
-        marginVertical: 5,
-      },
-      buttonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
-      },
-      buttonOutline: {
-        width: '100%',
-        padding: 15,
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderColor: '#6200ee',
-        borderRadius: 5,
-        alignItems: 'center',
-        marginVertical: 5,
-      },
-      buttonOutlineText: {
-        color: '#6200ee',
-        fontSize: 16,
-        fontWeight: 'bold',
-      },
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  heading: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  dateInput: {
+    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    marginBottom: 10,
+    borderRadius: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  calendarIcon: {
+    marginLeft: 10,
+  },
+  button: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: '#6200ee',
+    borderRadius: 5,
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonOutline: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#6200ee',
+    borderRadius: 5,
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  buttonOutlineText: {
+    color: '#6200ee',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });

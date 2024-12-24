@@ -1,5 +1,5 @@
-import { StyleSheet, FlatList, View } from "react-native";
-import React, { useEffect, useState, useContext } from "react";
+import { StyleSheet, View, FlatList } from "react-native";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { useRoute } from "@react-navigation/native";
 import PlaceDetailItem from "../PlaceDetail/PlaceDetailItem";
 import MapboxView from "../Home/MapboxView";
@@ -7,7 +7,11 @@ import Review from "../PlaceDetail/Review";
 import ReviewForm from "../PlaceDetail/ReviewForm";
 import { UserLocationContext } from "../../Context/UserLocationContext";
 import { fetchDirections } from "../../Services/GlobalApi";
-import { addToFavorites, isLocationFavorited, removeFromFavorites } from "@/app/Services/UserServices";
+import {
+  addToFavorites,
+  isLocationFavorited,
+  removeFromFavorites,
+} from "@/app/Services/UserServices";
 import { getLoggedInUser } from "@/app/Services/AuthUtils";
 
 export default function PlaceDetail() {
@@ -16,8 +20,9 @@ export default function PlaceDetail() {
   const { location } = useContext(UserLocationContext);
   const [route, setRoute] = useState(null);
   const [refreshReviews, setRefreshReviews] = useState(false);
-  const [scrollEnabled, setScrollEnabled] = useState(true); // Manage FlatList scroll
   const [isFavorite, setIsFavorite] = useState(false);
+
+  const flatListRef = useRef(null); // Ref for FlatList
 
   useEffect(() => {
     if (param.place) setPlace(param.place);
@@ -55,10 +60,10 @@ export default function PlaceDetail() {
     try {
       const user = await getLoggedInUser();
       if (!user) return;
-  
+
       // Optimistically update the UI
       setIsFavorite((prev) => !prev);
-  
+
       if (isFavorite) {
         const success = await removeFromFavorites(user.id, param.place.id);
         if (!success) {
@@ -67,7 +72,7 @@ export default function PlaceDetail() {
         }
       } else {
         const success = await addToFavorites(user.id, param.place.id);
-        if (!success) {
+        if (success) {
           // Revert the UI if the operation fails
           setIsFavorite((prev) => !prev);
         }
@@ -83,44 +88,59 @@ export default function PlaceDetail() {
     setRefreshReviews((prev) => !prev);
   };
 
-  const renderContent = () => (
-    <View>
-      <PlaceDetailItem
-        place={place}
-        onGetDirections={handleGetDirections}
-        isFavorite={isFavorite}
-        onToggleFavorite={toggleFavorite}
-      />
-      <View
-        style={styles.mapContainer}
-        onTouchStart={() => setScrollEnabled(false)} // Disable FlatList scroll
-        onTouchEnd={() => setScrollEnabled(true)} // Enable FlatList scroll
-      >
-        <MapboxView locations={[place]} route={route} />
-      </View>
-      <Review placeId={param.place.id} key={refreshReviews} />
-      <ReviewForm placeId={param.place.id} onReviewAdded={handleReviewAdded} />
-    </View>
-  );
+  const onScrollToReviews = () => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({ index: 1, animated: true }); // Scroll to the second item
+    }
+  };
+
+  const renderItem = ({ item, index }) => {
+    if (index === 0) {
+      return (
+        <PlaceDetailItem
+          place={place}
+          onGetDirections={handleGetDirections}
+          isFavorite={isFavorite}
+          onToggleFavorite={toggleFavorite}
+          onScrollToReviews={onScrollToReviews} // Pass the scroll handler
+        />
+      );
+    } else {
+      return (
+        <View>
+          <Review placeId={param.place.id} key={refreshReviews} />
+          <ReviewForm placeId={param.place.id} onReviewAdded={handleReviewAdded} />
+        </View>
+      );
+    }
+  };
 
   return (
-    <FlatList
-      data={[1]}
-      renderItem={renderContent}
-      keyExtractor={() => "place-detail"}
-      contentContainerStyle={styles.container}
-      scrollEnabled={scrollEnabled} // Control FlatList scroll
-    />
+    <View style={styles.container}>
+      <FlatList
+        ref={flatListRef}
+        data={[1, 2]} // Two items: details and reviews
+        renderItem={renderItem}
+        keyExtractor={(item, index) => `place-detail-${index}`}
+        contentContainerStyle={styles.contentContainer}
+      />
+      <View style={styles.mapContainer}>
+        <MapboxView locations={[place]} route={route} onPinPress={() => {}} />
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
     backgroundColor: "white",
   },
   mapContainer: {
-    height: 300, // Set appropriate height for MapView
-    marginBottom: 20,
+    height: 260,
+    padding: 20,
+  },
+  contentContainer: {
+    padding: 20,
   },
 });

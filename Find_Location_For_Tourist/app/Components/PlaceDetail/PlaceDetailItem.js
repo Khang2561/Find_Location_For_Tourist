@@ -7,6 +7,7 @@ export default function PlaceDetailItem({
   onGetDirections,
   isFavorite,
   onToggleFavorite,
+  onScrollToReviews, // Add this prop to handle the scroll action
 }) {
   return (
     <View>
@@ -31,10 +32,13 @@ export default function PlaceDetailItem({
           <Ionicons name="navigate-circle-outline" size={24} color={"black"} />
           <Text style={{ fontSize: 16, fontFamily: "raleway" }}>Hướng đi</Text>
         </TouchableOpacity>
-        <View style={styles.actionButton}>
-          <Ionicons name="share-outline" size={24} color={"black"} />
-          <Text style={{ fontSize: 16, fontFamily: "raleway" }}>Chia sẻ</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={onScrollToReviews} // Call the scroll action when clicked
+        >
+          <Ionicons name="chatbubble-outline" size={24} color={"black"} />
+          <Text style={{ fontSize: 16, fontFamily: "raleway" }}>Đánh giá</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionButton}
           onPress={onToggleFavorite}

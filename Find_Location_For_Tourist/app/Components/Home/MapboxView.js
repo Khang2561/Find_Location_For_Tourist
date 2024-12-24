@@ -11,18 +11,24 @@ import MapboxGL from "@rnmapbox/maps";
 import { UserLocationContext } from "../../Context/UserLocationContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MAPBOX_TOKEN } from "../../Services/GlobalApi";
+import { useNavigation } from "@react-navigation/native";
 
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
-export default function MapboxView({ locations, loading, route, onPinPress }) {
+export default function MapboxView({ locations = [], loading, route, onPinPress }) {
   const { location } = useContext(UserLocationContext);
   const cameraRef = useRef(null);
+  const navigation = useNavigation();
+
+  // Navigate to fullscreen
+  const handleFullscreen = () => {
+    navigation.navigate("search-full-screen");
+  };
 
   const calculateBounds = (locations) => {
     if (!locations.length) return null;
     const lons = locations.map((loc) => loc.longitude);
     const lats = locations.map((loc) => loc.latitude);
-
     return {
       southwest: [Math.min(...lons), Math.min(...lats)],
       northeast: [Math.max(...lons), Math.max(...lats)],
@@ -30,7 +36,7 @@ export default function MapboxView({ locations, loading, route, onPinPress }) {
   };
 
   useEffect(() => {
-    if (cameraRef.current && route) {
+    if (cameraRef.current && locations.length > 0 && location) {
       const bounds = calculateBounds([
         ...locations,
         { longitude: location.longitude, latitude: location.latitude },
@@ -41,11 +47,9 @@ export default function MapboxView({ locations, loading, route, onPinPress }) {
           (southwest[0] + northeast[0]) / 2,
           (southwest[1] + northeast[1]) / 2,
         ];
-
-        const zoom = 10; // Adjust to fit both points well
         cameraRef.current.setCamera({
           centerCoordinate: center,
-          zoomLevel: zoom,
+          zoomLevel: 14, // Adjust zoom as needed
           animationDuration: 1000,
         });
       }
@@ -72,7 +76,6 @@ export default function MapboxView({ locations, loading, route, onPinPress }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Những địa điểm gần đây</Text>
       <View style={styles.mapView}>
         <MapboxGL.MapView style={styles.map}>
           <MapboxGL.Camera
@@ -87,7 +90,7 @@ export default function MapboxView({ locations, loading, route, onPinPress }) {
                 key={`location-${index}`}
                 id={`marker-${index}`}
                 coordinate={[loc.longitude, loc.latitude]}
-                onSelected={() => onPinPress(loc)} // Handle pin press
+                onSelected={() => onPinPress(loc)}
               >
                 <View />
               </MapboxGL.PointAnnotation>
@@ -113,6 +116,9 @@ export default function MapboxView({ locations, loading, route, onPinPress }) {
       <TouchableOpacity style={styles.recenterButton} onPress={handleRecenter}>
         <MaterialIcons name="my-location" size={24} color="black" />
       </TouchableOpacity>
+      <TouchableOpacity style={styles.fullscreenButton} onPress={handleFullscreen}>
+        <MaterialIcons name="fullscreen" size={24} color="black" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -121,12 +127,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     alignItems: "center",
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 10,
-    fontWeight: "600",
-    textAlign: "center",
   },
   mapView: {
     width: Dimensions.get("screen").width * 0.9,
@@ -152,6 +152,21 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 30,
+    backgroundColor: "white",
+    borderRadius: 50,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  fullscreenButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 90,
     backgroundColor: "white",
     borderRadius: 50,
     padding: 10,
