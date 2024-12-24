@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { supabase } from '../../../lib/supabase';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { supabase } from "../../../lib/supabase";
 
-export default function Login({ onSignupSwitch, onLoginSuccess }) {
-  const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
+export default function Login({ onSignupSwitch, onLoginSuccess, onForgotPassword }) {
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
-        .from('user')
-        .select('email')
+        .from("user")
+        .select("email")
         .or(`username.eq.${identifier},email.eq.${identifier}`)
         .single();
-      if (error || !data) throw new Error('Tên đăng nhập hoặc email sai!');
+      if (error || !data) throw new Error("Tên đăng nhập hoặc email sai!");
 
       const { email } = data;
 
@@ -25,8 +31,8 @@ export default function Login({ onSignupSwitch, onLoginSuccess }) {
       });
       if (loginError) throw loginError;
 
-      alert('Đăng nhập thành công!');
-      onLoginSuccess(); 
+      alert("Đăng nhập thành công!");
+      onLoginSuccess();
     } catch (error) {
       alert(error.message);
     } finally {
@@ -57,11 +63,14 @@ export default function Login({ onSignupSwitch, onLoginSuccess }) {
       >
         <Text style={styles.buttonText}>Đăng nhập</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.buttonOutline}
-        onPress={onSignupSwitch}
-      >
+      <TouchableOpacity style={styles.buttonOutline} onPress={onSignupSwitch}>
         <Text style={styles.buttonOutlineText}>Đăng ký</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.forgotPasswordButton}
+        onPress={onForgotPassword}
+      >
+        <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
       </TouchableOpacity>
     </View>
   );
@@ -71,46 +80,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   heading: {
     fontSize: 24,
     marginBottom: 20,
   },
   input: {
-    width: '100%',
+    width: "100%",
     padding: 10,
     borderWidth: 1,
     marginBottom: 10,
     borderRadius: 5,
   },
   button: {
-    width: '100%',
+    width: "100%",
     padding: 15,
-    backgroundColor: '#6200ee',
+    backgroundColor: "#6200ee",
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 5,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   buttonOutline: {
-    width: '100%',
+    width: "100%",
     padding: 15,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 2,
-    borderColor: '#6200ee',
+    borderColor: "#6200ee",
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 5,
   },
   buttonOutlineText: {
-    color: '#6200ee',
+    color: "#6200ee",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  forgotPasswordButton: {
+    marginTop: 10,
+  },
+  forgotPasswordText: {
+    color: '#6200ee',
+    fontSize: 14,
+    textDecorationLine: 'underline',
+    textAlign: 'center',
   },
 });

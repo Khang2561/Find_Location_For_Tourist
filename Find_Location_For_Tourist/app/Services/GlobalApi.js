@@ -33,6 +33,20 @@ export async function fetchLocations(category, userLocation) {
   }
 }
 
+export async function fetchAllLocation(userLocation) {
+  try {
+    const { data, error } = await supabase
+      .from("locations")
+      .select("*")
+    if (error) throw error;
+
+    return data;
+  } catch (err) {
+    console.error("Error fetching locations:", err.message);
+    return [];
+  }
+}
+
 export async function searchLocations(query) {
   try {
     const { data, error } = await supabase

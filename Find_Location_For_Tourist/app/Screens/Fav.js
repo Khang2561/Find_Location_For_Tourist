@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Text } from "react-native";
 import PlaceItem from "../Components/Home/PlaceItem";
 import { fetchFavorites } from "../Services/UserServices";
 import { getLoggedInUser } from "../Services/AuthUtils";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 export default function Fav() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
   const fetchUserFavorites = async () => {
     setLoading(true);
@@ -20,9 +20,11 @@ export default function Fav() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchUserFavorites();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserFavorites(); // Fetch favorites whenever this screen is focused
+    }, [])
+  );
 
   if (loading) {
     return (

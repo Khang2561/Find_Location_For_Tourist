@@ -10,7 +10,7 @@ import {
 import PlaceItem from "../../Components/Home/PlaceItem";
 import { useNavigation } from "@react-navigation/native";
 
-export default function PlaceList({ locations }) {
+export default function PlaceList({ locations, selectedLocation }) {
   const [data, setData] = useState([]); // State to hold the data
   const [page, setPage] = useState(1); // State to track the current page
   const [loading, setLoading] = useState(false); // State for loading indicator
@@ -83,7 +83,7 @@ export default function PlaceList({ locations }) {
 
   return (
     <FlatList
-      data={data}
+      data={selectedLocation ? [selectedLocation] : data}
       renderItem={({ item }) => (
         <TouchableOpacity onPress={() => onPlaceClick(item)}>
           <PlaceItem location={item} />

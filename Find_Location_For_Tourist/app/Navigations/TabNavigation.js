@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Fav from "../Screens/Fav";
-import Search from "../Screens/Search";
 import Profile from "../Screens/Profile";
 import Entypo from "react-native-vector-icons/Entypo"; 
 import HomeNavigation from "./HomeNavigation";
@@ -41,18 +40,6 @@ export default function TabNavigation() {
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <Entypo name="home" color={color} size={size} />
-          ),
-        }}
-      />
-
-      {/* Tab Search */}
-      <Tab.Screen
-        name="Search"
-        component={Search}
-        options={{
-          tabBarLabel: "Search",
-          tabBarIcon: ({ color, size }) => (
-            <Entypo name="magnifying-glass" color={color} size={size} />
           ),
         }}
       />
